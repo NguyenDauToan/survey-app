@@ -1,0 +1,18 @@
+/* src/components/Header.css */
+
+.header {
+    position: relative;
+    z-index: 40;
+    transition: background 0.3s ease;
+  }
+  
+  .header .container {
+    max-width: 1200px;
+    transition: padding 0.3s ease;
+  }
+  
+  @media (max-width: 640px) {
+    .header .container {
+      padding: 10px;
+    }
+  }
