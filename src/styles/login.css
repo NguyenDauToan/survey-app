@@ -1,0 +1,27 @@
+.login-form {
+    width: 400px; /* tăng chiều rộng */
+    max-width: 90%; /* responsive trên màn hình nhỏ */
+    padding: 2rem; /* khoảng cách xung quanh */
+    margin: 2rem auto; /* căn giữa form */
+    background-color: #f9f9f9; /* màu nền nhạt */
+    border-radius: 12px; /* bo tròn góc */
+    box-shadow: 0 4px 15px rgba(0,0,0,0.2); /* đổ bóng */
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem; /* khoảng cách giữa các input */
+    font-size: 1.1rem; /* font lớn hơn */
+  }
+  
+  .login-form input {
+    padding: 0.8rem 1rem;
+    font-size: 1rem;
+    border-radius: 8px;
+    border: 1px solid #ccc;
+  }
+  
+  .login-form button {
+    padding: 0.9rem 1rem;
+    font-size: 1.1rem;
+    border-radius: 8px;
+  }
+  

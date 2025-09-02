@@ -132,6 +132,8 @@
 }
 
 .login-btn {
+  margin-left: 600px;
+  margin-bottom: 26px;
   background: linear-gradient(135deg, #2563eb, #1d4ed8);
   color: white;
   padding: 10px 20px;
@@ -155,6 +157,7 @@
 }
 
 .user-info {
+  margin-bottom: 20px;
   display: flex;
   align-items: center;
   gap: 8px;

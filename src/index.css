@@ -188,3 +188,19 @@ button:focus-visible {
     @apply bg-background text-foreground;
   }
 }
+/* ===== Dialog Styles ===== */
+@layer base {
+  .dialog-overlay {
+    @apply fixed inset-0 z-50 bg-black/50 backdrop-blur-sm;
+  }
+
+  .dialog-content {
+    @apply fixed left-1/2 top-1/2 z-50 w-full max-w-lg -translate-x-1/2 -translate-y-1/2 rounded-xl bg-background p-6 shadow-lg;
+    @apply animate-in fade-in-50 zoom-in-95;
+  }
+
+  .dialog-content:focus {
+    outline: none;
+  }
+}
+
