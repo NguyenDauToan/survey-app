@@ -7,12 +7,18 @@ import DialogTitle from "@mui/material/DialogTitle";
 import Button from "@mui/material/Button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { useDispatch } from "react-redux";
+import { useNavigate } from "react-router-dom";
+import { login } from "@/redux/authSlice";
+import { apiRegister } from "@/api/api";
 import "../styles/register.css";
 
 export default function RegisterDialog({ open, onOpenChange, onSwitchToLogin }) {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [confirm, setConfirm] = useState("");
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
 
   const handleClose = () => {
     onOpenChange(false);
@@ -27,25 +33,23 @@ export default function RegisterDialog({ open, onOpenChange, onSwitchToLogin }) 
     }
 
     try {
-      const res = await fetch("http://localhost:3000/register", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ email, password }),
-      });
+      const data = await apiRegister(email, password);
 
-      const data = await res.json();
-
-      if (res.ok) {
-        console.log("✅ Đăng ký thành công", data);
-        alert("Đăng ký thành công! Bạn có thể đăng nhập.");
-        onSwitchToLogin(); // chuyển sang login
+      if (data.success) {
+        // đăng ký thành công
+        dispatch(login({ user: data.user, token: data.token }));
+        localStorage.setItem("token", data.token);
+        alert("Đăng ký thành công!");
+        onOpenChange(false);
+        navigate("/");
       } else {
+        // thất bại
         console.error("❌ Đăng ký thất bại", data.message);
         alert(data.message || "Không thể đăng ký!");
       }
     } catch (err) {
       console.error("⚠️ Lỗi kết nối backend:", err);
-      alert("Không thể kết nối server!");
+      alert("Không thể kết nối server! Hãy kiểm tra API_BASE hoặc backend.");
     }
   };
 

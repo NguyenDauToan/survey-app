@@ -10,6 +10,7 @@ import { Label } from "@/components/ui/label";
 import { useDispatch } from "react-redux";
 import { login } from "@/redux/authSlice";
 import { useNavigate } from "react-router-dom";
+import { apiLogin } from "@/api/api";
 import "../styles/login.css";
 
 export default function LoginDialog({ open, onOpenChange,onSwitchToRegister,onLoginSuccess }) {
@@ -24,22 +25,25 @@ export default function LoginDialog({ open, onOpenChange,onSwitchToRegister,onLo
   const handleSubmit = async (e) => {
     e.preventDefault();
   
-    const res = await fetch("http://localhost:3000/login", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ email, password }),
-    });
+    try {
+      const data = await apiLogin(email, password);
   
-    const data = await res.json();
-    if (res.ok && data.success) { // API trả về user có displayname
-      dispatch(login(data.user));
-      alert(`Xin chào ${data.user.displayname}`);
-      onOpenChange(false);
-      navigate("/");
-    } else {
-      alert(data.message || "Sai tài khoản hoặc mật khẩu!");
+      if (data.success && data.token && data.user) {
+        // login thành công
+        dispatch(login({ user: data.user, token: data.token }));
+        localStorage.setItem("token", data.token);
+        alert(`Xin chào ${data.user.displayName || data.user.email}`);
+        onOpenChange(false);
+        navigate("/");
+      } else {
+        alert(data.message || "Sai tài khoản hoặc mật khẩu!");
+      }
+    } catch (err) {
+      console.error("❌ Lỗi đăng nhập:", err);
+      alert("Không thể kết nối server!");
     }
   };
+  
 
   return (
     <Dialog open={open} onClose={handleClose}>
