@@ -1,43 +1,42 @@
-// src/api/index.js
-const API_BASE = "http://localhost:8081/api";
+// src/api/api.js
+import axios from "axios";
 
-export const apiRegister = async (email, password) => {
-  const res = await fetch(`${API_BASE}/auth/register`, {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({ email, password }),
-  });
+const API_BASE = "http://localhost:8081/api/"; // đổi lại nếu backend chạy trong Docker
 
-  if (!res.ok) {
-    throw new Error("Đăng ký thất bại!");
+const axiosClient = axios.create({
+  baseURL: API_BASE,
+  headers: {
+    "Content-Type": "application/json",
+  },
+});
+
+// Interceptor để log lỗi chi tiết
+axiosClient.interceptors.response.use(
+  (response) => response,
+  (error) => {
+    console.error("❌ API Error:", error.response?.data || error.message);
+    return Promise.reject(error);
   }
+);
 
-  return res.json();
-};
+// ⚡ Sửa key gửi đúng với backend
+export const apiRegister = (email, password) =>
+  axiosClient
+    .post("/auth/register", { email, mat_khau: password })
+    .then((res) => res.data);
 
-export const apiLogin = async (email, password) => {
-  const res = await fetch(`${API_BASE}/auth/login`, {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({ email, password }),
-  });
+export const apiLogin = (email, password) =>
+  axiosClient
+    .post("/auth/login", { email, mat_khau: password })
+    .then(res => res.data);
+    
+/*
+export const apiGetMe = (token) =>
+  axiosClient
+    .get("/auth/me", {
+      headers: { Authorization: `Bearer ${token}` },
+    })
+    .then((res) => res.data);
 
-  if (!res.ok) {
-    throw new Error("Đăng nhập thất bại!");
-  }
-
-  return res.json();
-};
-
-export const apiGetMe = async (token) => {
-  const res = await fetch(`${API_BASE}/auth/me`, {
-    method: "GET",
-    headers: { Authorization: `Bearer ${token}` },
-  });
-
-  if (!res.ok) {
-    throw new Error("Không thể lấy thông tin user!");
-  }
-
-  return res.json();
-};
+export default axiosClient;
+*/

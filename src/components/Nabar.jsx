@@ -72,11 +72,11 @@ export default function Navbar({ submissions = [], onExport, onImport, shareFill
                       />
                     ) : (
                       <div className="avatar-placeholder">
-                        {user.displayname?.charAt(0).toUpperCase() || 'U'}
+                        {user.Ten?.charAt(0).toUpperCase() || 'U'}
                       </div>
                     )}
                   </div>
-                  <span className="user-name">{user.displayname}</span>
+                  <span className="user-name">{user.Ten}</span>
                   <svg
                     className={`dropdown-arrow ${isUserDropdownOpen ? 'open' : ''}`}
                     width="12"
@@ -97,7 +97,7 @@ export default function Navbar({ submissions = [], onExport, onImport, shareFill
                 <div className={`dropdown-menu ${isUserDropdownOpen ? 'show' : ''}`}>
                   <div className="dropdown-">
                     <div className="user-details">
-                      <div className="user-name-large">{user.displayname}</div>
+                      <div className="user-name-large">{user.Ten}</div>
                       <div className="user-email">{user.email || 'user@example.com'}</div>
                     </div>
                   </div>

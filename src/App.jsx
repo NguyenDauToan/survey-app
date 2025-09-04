@@ -7,7 +7,6 @@ import RegisterDialog from "./components/RegisterDialog";
 import QuestionEditor from "./components/QuestionEditor";
 import { useDispatch, useSelector } from "react-redux";
 import { login, logout } from "@/redux/authSlice";
-import { apiGetMe } from "./api/api";
 const genId = () =>
   typeof crypto !== "undefined" && crypto.randomUUID
     ? crypto.randomUUID()
@@ -40,7 +39,7 @@ export default function App() {
     localStorage.setItem("surveyForm", JSON.stringify(form));
   }, [form]);
 
-  // Kiểm tra token khi reload
+ /* // Kiểm tra token khi reload
   useEffect(() => {
     if (token) {
       apiGetMe(token).then((data) => {
@@ -52,7 +51,7 @@ export default function App() {
       });
     }
   }, [token, dispatch]);
-
+*/
   // Handlers cho form
   const handleAdd = (type) => {
     const newQuestion = {

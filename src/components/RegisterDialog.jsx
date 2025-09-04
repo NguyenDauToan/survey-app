@@ -7,18 +7,15 @@ import DialogTitle from "@mui/material/DialogTitle";
 import Button from "@mui/material/Button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { useDispatch } from "react-redux";
-import { useNavigate } from "react-router-dom";
-import { login } from "@/redux/authSlice";
-import { apiRegister } from "@/api/api";
+
 import "../styles/register.css";
 
 export default function RegisterDialog({ open, onOpenChange, onSwitchToLogin }) {
   const [email, setEmail] = useState("");
+  const [Ten, setTen] = useState(""); // thêm tên
   const [password, setPassword] = useState("");
-  const [confirm, setConfirm] = useState("");
-  const dispatch = useDispatch();
-  const navigate = useNavigate();
+  const [passwordConfirm, setPasswordConfirm] = useState("");
+
 
   const handleClose = () => {
     onOpenChange(false);
@@ -26,32 +23,39 @@ export default function RegisterDialog({ open, onOpenChange, onSwitchToLogin }) 
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-
-    if (password !== confirm) {
-      alert("Mật khẩu xác nhận không khớp!");
+  
+    if (password !== passwordConfirm) {
+      alert("❌ Mật khẩu xác nhận không khớp!");
       return;
     }
-
+  
     try {
-      const data = await apiRegister(email, password);
-
-      if (data.success) {
-        // đăng ký thành công
-        dispatch(login({ user: data.user, token: data.token }));
-        localStorage.setItem("token", data.token);
-        alert("Đăng ký thành công!");
-        onOpenChange(false);
-        navigate("/");
+      const res = await fetch("http://localhost:8081/api/auth/register", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          Ten: Ten,        // lấy từ input Họ và tên
+          email: email,
+          mat_khau: password,
+        }),
+      });
+  
+      const data = await res.json();
+  
+      if (res.ok) {
+        // Đăng ký thành công → đóng dialog register, mở dialog login
+        alert(`🎉 Đăng ký thành công! Hãy đăng nhập bằng tài khoản mới.`);
+        onOpenChange(false);      // đóng dialog đăng ký
+        onSwitchToLogin();        // mở dialog đăng nhập
       } else {
-        // thất bại
-        console.error("❌ Đăng ký thất bại", data.message);
         alert(data.message || "Không thể đăng ký!");
       }
     } catch (err) {
-      console.error("⚠️ Lỗi kết nối backend:", err);
-      alert("Không thể kết nối server! Hãy kiểm tra API_BASE hoặc backend.");
+      console.error("Lỗi đăng ký:", err);
+      alert("Không thể kết nối server!");
     }
   };
+  
 
   return (
     <Dialog open={open} onClose={handleClose}>
@@ -62,6 +66,13 @@ export default function RegisterDialog({ open, onOpenChange, onSwitchToLogin }) 
           onSubmit={handleSubmit}
           style={{ display: "flex", flexDirection: "column", gap: "1rem", marginTop: "1rem" }}
         >
+          <Label>Họ và tên</Label>
+          <Input
+            type="text"
+            value={Ten}
+            onChange={(e) => setTen(e.target.value)}
+            required
+          />
           <Label>Email</Label>
           <Input
             type="email"
@@ -79,8 +90,8 @@ export default function RegisterDialog({ open, onOpenChange, onSwitchToLogin }) 
           <Label>Xác nhận mật khẩu</Label>
           <Input
             type="password"
-            value={confirm}
-            onChange={(e) => setConfirm(e.target.value)}
+            value={passwordConfirm}
+            onChange={(e) => setPasswordConfirm(e.target.value)}
             required
           />
           <Button type="submit" variant="contained" style={{ marginTop: "1rem" }}>
