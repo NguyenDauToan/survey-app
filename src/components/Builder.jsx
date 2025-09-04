@@ -2,6 +2,7 @@ import QuestionEditor from './QuestionEditor'
 import { Card, CardContent } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 import { Plus } from 'lucide-react'
+import { Link } from "react-router-dom";
 
 export default function Builder({ form, setForm, onAdd, onDelete, onDuplicate, onMove }) {
   // fallback để tránh lỗi
@@ -68,6 +69,11 @@ export default function Builder({ form, setForm, onAdd, onDelete, onDuplicate, o
           <Button onClick={() => safeOnAdd('linear_scale')} variant='outline'>Scale</Button>
           <Button onClick={() => safeOnAdd('date')} variant='outline'>Date</Button>
           <Button onClick={() => safeOnAdd('time')} variant='outline'>Time</Button>
+
+           <Link
+        to="/admin"
+        className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700">Admin</Link>
+
         </CardContent>
       </Card>
     </div>

@@ -139,6 +139,7 @@ export default function App() {
 
   return (
     <div className="min-h-screen bg-gray-50">
+    
       <Header
         onShare={shareFillLink}
         onExport={exportJSON}
@@ -166,6 +167,7 @@ export default function App() {
         onOpenChange={(val) => setDialog(val ? "register" : null)}
         onSwitchToLogin={() => setDialog("login")}
       />
+      
     </div>
   );
 }
