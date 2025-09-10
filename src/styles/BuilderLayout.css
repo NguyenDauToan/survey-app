@@ -1,0 +1,35 @@
+.survey-button {
+    display: flex;
+    justify-content: center; /* canh giữa ngang */
+    align-items: center;     /* canh giữa dọc nếu container cao */
+    margin-top: 20px; 
+    margin-top: 50px;
+}
+.survey-title {
+    background-color: none;
+    margin-top: 50px;
+    text-align: center;
+    
+}
+.textarea-none {
+    background-color: none;
+}
+.survey-title input,
+.question-description textarea {
+  background-color: none; /* nền đen mờ */
+  color: #fff;
+  border: 2px solid transparent; /* mặc định không hiện khung */
+  border-radius: 8px;
+  padding: 12px;
+  transition: border 0.3s, background-color 0.3s;
+}
+
+.survey-title input:hover,
+.question-description textarea:hover,       
+.survey-title input:focus,
+.question-description textarea:focus {
+  border-color: #14b8a6; /* màu teal nổi bật khi hover/focus */
+  background-color: rgba(0, 0, 0, 0.6); /* nền đậm hơn khi hover */
+  outline: none;
+}
+

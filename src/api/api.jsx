@@ -1,7 +1,7 @@
 // src/api/api.js
 import axios from "axios";
 
-const API_BASE = "http://localhost:8081/api/"; // đổi lại nếu backend chạy trong Docker
+const API_BASE = "https://survey-server-m884.onrender.com/api"; // đổi lại nếu backend chạy trong Docker
 
 const axiosClient = axios.create({
   baseURL: API_BASE,
@@ -30,7 +30,7 @@ export const apiLogin = (email, password) =>
     .post("/auth/login", { email, mat_khau: password })
     .then(res => res.data);
     
-/*
+
 export const apiGetMe = (token) =>
   axiosClient
     .get("/auth/me", {
@@ -39,4 +39,3 @@ export const apiGetMe = (token) =>
     .then((res) => res.data);
 
 export default axiosClient;
-*/

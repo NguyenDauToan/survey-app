@@ -1,0 +1,63 @@
+.build-form {
+  margin-top: -41px;
+}
+
+.list-name {
+  margin-top: 10px;
+  margin-left: 30px;
+}
+
+.start {}
+
+.btn-save {
+  color: white;
+  font-size: 12px;
+  padding: 4px 8px;
+  width: 60px;
+  margin-left: 10px;
+  /* bề ngang cố định */
+}
+
+.nav-links {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+}
+
+.nav-links a {
+  position: relative;
+  text-decoration: none;
+  font-size: 18px;
+  color: #000;
+}
+
+/* Thêm dấu > sau mỗi link, trừ link cuối */
+.nav-links a:not(:last-child)::after {
+  content: ">";
+  margin-left: 8px;
+  color: #555;
+}
+
+.question-table {
+  margin-left: 10px;
+}
+
+.finished {
+  margin-left: 10px;
+}
+
+.completed {
+  margin-left: 10px;
+}
+
+.share {
+  margin-left: 10px;
+}
+
+.btn-task {
+  color: white;
+  padding: 4px 8px;
+  width: 150px;
+  margin-left: 700px;
+
+}

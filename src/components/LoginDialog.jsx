@@ -1,103 +1,124 @@
-// LoginDialog.jsx
-import React, { useState } from "react";
+import React, { useEffect, useRef } from "react";
 import Dialog from "@mui/material/Dialog";
-import DialogActions from "@mui/material/DialogActions";
 import DialogContent from "@mui/material/DialogContent";
 import DialogTitle from "@mui/material/DialogTitle";
 import Button from "@mui/material/Button";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
 import { useDispatch } from "react-redux";
 import { login } from "@/redux/authSlice";
 import { useNavigate } from "react-router-dom";
-import { apiLogin } from "@/api/api";
-import "../styles/login.css";
 
-export default function LoginDialog({ open, onOpenChange, onSwitchToRegister, onLoginSuccess }) {
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
-  const [error, setError] = useState("");
-  const [loading, setLoading] = useState(false);
-  const [successMsg, setSuccessMsg] = useState("");
-
+export default function LoginDialog({ open, onOpenChange }) {
   const dispatch = useDispatch();
   const navigate = useNavigate();
+  const googleButtonRef = useRef(null);
 
-  const handleClose = () => {
-    onOpenChange(false);
-    setError("");
-  };
-
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-    setLoading(true);
-    setError("");
-
+  const handleCredentialResponse = async (response) => {
+    console.log("Google credential:", response);
     try {
-      const data = await apiLogin(email, password);
-      console.log("API login response:", data);
+      const res = await fetch(
+        "https://survey-server-m884.onrender.com/api/auth/google/login",
+        {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ id_token: response.credential }),
+        }
+      );
+
+      const text = await res.text();
+      console.log("Raw response from server:", text);
+
+      let data;
+      try {
+        data = JSON.parse(text);
+      } catch (err) {
+        console.error("Server trả về không phải JSON:", text);
+        alert("Đăng nhập thất bại");
+        return;
+      }
+
       if (data.user && data.token) {
-        dispatch(login({ user: data.user, token: data.token }));
+        const user = {
+          ...data.user,
+          Ten: data.user.ten, // map từ backend
+          role: data.user.vai_tro ? "admin" : "user",
+        };
+
+        dispatch(login({ user, token: data.token }));
         localStorage.setItem("token", data.token);
-        alert(data.message || "Đăng nhập thành công")
+        localStorage.setItem("user", JSON.stringify(user));
+
+        if (user.role === "admin") navigate("/admin");
+        else navigate("/");
+
         onOpenChange(false);
-        onLoginSuccess?.(data.user);
-        navigate("/");
       } else {
-        setError(data.message || "Sai tài khoản hoặc mật khẩu!");
+        alert("Đăng nhập thất bại");
       }
     } catch (err) {
-      console.error("Lỗi đăng nhập:", err);
-      setError("Không thể kết nối server!");
-    } finally {
-      setLoading(false);
+      console.error("Lỗi khi đăng nhập Google:", err);
+      alert("Lỗi khi đăng nhập Google");
     }
   };
 
+  useEffect(() => {
+    if (!open) return;
+
+    const renderGoogleButton = () => {
+      if (!window.google || !googleButtonRef.current) return;
+
+      // Xóa nút cũ nếu có
+      googleButtonRef.current.innerHTML = "";
+
+      window.google.accounts.id.initialize({
+        client_id: import.meta.env.VITE_GOOGLE_CLIENT_ID,
+        callback: handleCredentialResponse,
+      });
+
+      window.google.accounts.id.renderButton(googleButtonRef.current, {
+        theme: "outline",
+        size: "large",
+        width: "100%",
+      });
+
+      // optional: prompt Google One Tap (nếu muốn)
+      // window.google.accounts.id.prompt();
+    };
+
+    // requestAnimationFrame + setTimeout để đảm bảo Dialog fully mount
+    const rafId = requestAnimationFrame(() => setTimeout(renderGoogleButton, 50));
+
+    return () => cancelAnimationFrame(rafId);
+  }, [open]);
+
   return (
-    <Dialog open={open} onClose={handleClose}>
-      <DialogTitle>Đăng nhập</DialogTitle>
-      <DialogContent>
-        <form
-          className="login-form"
-          onSubmit={handleSubmit}
-          style={{ display: "flex", flexDirection: "column", gap: "1rem", marginTop: "1rem" }}
+    <Dialog
+      open={open}
+      onClose={() => onOpenChange(false)}
+      PaperProps={{ sx: { borderRadius: 4, width: "400px", padding: 4 } }}
+    >
+      <DialogTitle sx={{ textAlign: "center", fontWeight: "bold" }}>
+        Đăng nhập với Google
+      </DialogTitle>
+      <DialogContent
+        sx={{
+          display: "flex",
+          flexDirection: "column",
+          alignItems: "center",
+          gap: 3,
+        }}
+      >
+        <div ref={googleButtonRef} style={{ width: "100%" }}></div>
+        <div style={{ textAlign: "center", fontSize: "0.9rem", color: "gray" }}>
+          Chỉ cần tài khoản Google để đăng nhập
+        </div>
+        <Button
+          variant="outlined"
+          onClick={() => onOpenChange(false)}
+          sx={{ mt: 2, width: "100%" }}
         >
-          <Label>Email</Label>
-          <Input
-            type="email"
-            name="email"
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
-            required
-          />
-          <Label>Mật khẩu</Label>
-          <Input
-            type="password"
-            name="mat_khau"
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
-            required
-          />
-
-          {error && <p style={{ color: "red", marginTop: "0.5rem" }}>{error}</p>}
-
-          <Button type="submit" variant="contained" disabled={loading}>
-            {loading ? "Đang đăng nhập..." : "Đăng nhập"}
-          </Button>
-        </form>
-
-        <p style={{ marginTop: "1rem", textAlign: "center" }}>
-          Chưa có tài khoản?{" "}
-          <Button variant="text" onClick={onSwitchToRegister}>
-            Đăng ký ngay
-          </Button>
-        </p>
+          Hủy
+        </Button>
       </DialogContent>
-
-      <DialogActions>
-        <Button onClick={handleClose}>Hủy</Button>
-      </DialogActions>
     </Dialog>
   );
 }

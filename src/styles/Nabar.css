@@ -74,8 +74,9 @@
   align-items: center;
   gap: 12px;
   text-decoration: none;
-  color: #333;
+  color: red;
   font-weight: 600;
+  margin-left: -80px;
 }
 
 .logo-icon {
@@ -120,7 +121,14 @@
   align-items: center;
   gap: 6px;
 }
-
+.survey-link {
+  margin-left: -310px;
+}
+.create-survey-link{
+}
+.my-survey-link{
+  margin-left: 10px;
+}
 .nav-link:hover {
   background: rgba(37, 99, 235, 0.1);
   color: #2563eb;
@@ -130,10 +138,12 @@
   background: #2563eb;
   color: white;
 }
-
+.navbar li {
+  list-style: none;
+}
 .login-btn {
   margin-left: 600px;
-  margin-bottom: 26px;
+  margin-bottom: 10px;
   background: linear-gradient(135deg, #2563eb, #1d4ed8);
   color: white;
   padding: 10px 20px;
@@ -144,6 +154,7 @@
   display: flex;
   align-items: center;
   gap: 6px;
+  margin-right: -100px;
 }
 
 .login-btn:hover {
@@ -154,6 +165,9 @@
 /* User Dropdown Styles */
 .user-dropdown {
   position: relative;
+  margin-left: 570px;
+  margin-right: -100px;
+  margin-top: 15px;
 }
 
 .user-info {
@@ -442,7 +456,8 @@
 
   .logo-text {
     font-size: 16px;
-  }
+    color: #ff0000; /* đỏ sáng */
+}
 
   .logo-subtitle {
     font-size: 11px;

@@ -191,6 +191,11 @@ button:focus-visible {
     @apply bg-background text-foreground;
   }
 }
+html, body {
+  height: 100%;
+  margin: 0;
+  overflow: hidden; /* 👈 khóa cuộn body */
+}
 /* ===== Dialog Styles ===== */
 @layer base {
   .dialog-overlay {
