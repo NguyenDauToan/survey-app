@@ -1,0 +1,23 @@
+.title-descripton input,
+.title-descripton textarea {
+  background-color: none; /* nền đen mờ */
+  color: #fff;
+  border: 2px solid transparent; /* mặc định không hiện khung */
+  border-radius: 8px;
+  padding: 12px;
+  transition: border 0.3s, background-color 0.3s;
+}
+.title-descripton input:hover,
+.title-descripton textarea:hover, 
+.title-descripton input:focus,
+.title-descripton textarea:focus {
+    border-color: #14b8a6; /* màu teal nổi bật khi hover/focus */
+    background-color: rgba(0, 0, 0, 0.6); /* nền đậm hơn khi hover */
+    outline: none;
+  }
+.title-descripton {
+    margin-top: 30px;
+}
+.fixed {
+    margin-right: 310px;
+}

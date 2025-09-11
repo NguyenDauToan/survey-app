@@ -4,7 +4,9 @@ import { Link } from "react-router-dom";
 import SurveyBuilder from "./main/SurveyBuilder";
 
 export default function FormBuilder() {
+  const [step, setStep] = useState("builder");
   const [title, setTitle] = useState("Khảo sát không có tiêu đề");
+  const [answers, setAnswers] = useState({});
   const [description, setDescription] = useState("Nhập mô tả...");
   const [questions, setQuestions] = useState([
     { id: Date.now(), text: "Câu hỏi 1", type: "text" },
@@ -15,7 +17,7 @@ export default function FormBuilder() {
   const [backgroundImage, setBackgroundImage] = useState("/img/anh-dep-68.jpg");
   const [surveyTemplates] = useState([
     "/img/anh-dep-68.jpg",
-    "/img/template2.jpg",
+    "/img/anh-dep-68.jpg",
     "/img/template3.jpg",
   ]);
 
@@ -51,20 +53,38 @@ export default function FormBuilder() {
   };
 
   return (
-    <div className="build-form min-h-screen bg-gray-100 flex flex-col overflow-hidden">
+    <div className="build-form min-h-screen bg-gray-100 flex flex-col">
       {/* Thanh điều hướng */}
       <div
         className="list-name"
-        style={{ display: "flex", gap: "10px", alignItems: "center", padding: "10px" }}
+        style={{
+          display: "flex",
+          gap: "10px",
+          alignItems: "center",
+          padding: "10px",
+        }}
       >
-        <Link className="start" style={{ fontSize: 18 }}>Trang bắt đầu</Link>
-        <Link className="question-table" style={{ fontSize: 18 }}>Bảng hỏi</Link>
-        <Link className="finished" style={{ fontSize: 18 }}>Trang kết thúc</Link>
-        <Link className="completed" style={{ fontSize: 18 }}>Hoàn tất</Link>
-        <Link className="share" style={{ fontSize: 18 }}>Chia sẻ</Link>
+        <Link className="start" onClick={() => setStep("builder")} style={{ fontSize: 18 }}>
+          Trang bắt đầu
+        </Link>
+        <Link
+          className="question-table"
+          style={{ fontSize: 18 }}
+          onClick={() => setStep("question")} // đổi giao diện bên trái
+        >
+          Bảng hỏi
+        </Link>
+        <Link className="finished" style={{ fontSize: 18 }}>
+          Trang kết thúc
+        </Link>
+        <Link className="completed" style={{ fontSize: 18 }}>
+          Hoàn tất
+        </Link>
+        <Link className="share" style={{ fontSize: 18 }}>
+          Chia sẻ
+        </Link>
         <button className="btn-save">Đã lưu</button>
         <button className="btn-task">Tác vụ khác</button>
-
       </div>
 
       {/* SurveyBuilder bọc cả BuilderLayout + SidebarSlider */}
@@ -84,6 +104,10 @@ export default function FormBuilder() {
         surveyTemplates={surveyTemplates}
         chooseTemplate={chooseTemplate}
         startSurvey={startSurvey}
+        step={step}
+        setStep={setStep}
+        answers={answers}
+        setAnswers={setAnswers}
       />
     </div>
   );
