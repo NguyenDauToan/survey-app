@@ -8,6 +8,7 @@ export default function BuilderLayout({
   setDescription,
   backgroundImage,
   startSurvey,
+  setStep,
 }) {
   const defaultBg = "/img/anh-dep-68.jpg";
   const bg = backgroundImage || defaultBg;
@@ -45,12 +46,13 @@ export default function BuilderLayout({
         <div className="survey-button">
           <button
             type="button"
-            onClick={startSurvey}
+            onClick={() => setStep("question")} // đổi giao diện bên trái
             className="bg-teal-700 text-white rounded-full px-6 py-3 flex items-center gap-2"
           >
             <span>Bắt đầu</span>
             <i className="fa fa-chevron-right"></i>
           </button>
+          
         </div>
       </div>
     </div>

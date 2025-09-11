@@ -21,6 +21,8 @@ export default function SurveyBuilder(props) {
             skipHelloPage={props.skipHelloPage}
             backgroundImage={props.backgroundImage}
             startSurvey={props.startSurvey}
+            setStep={props.setStep}   // 👉 thêm dòng này
+
           />
         )}
 
