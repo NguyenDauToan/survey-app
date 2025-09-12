@@ -1,0 +1,140 @@
+.question-type-box {
+    background-color: #f5f5f5;
+    /* nền xám nhạt */
+    padding: 8px;
+    border-radius: 6px;
+    transition: background-color 0.3s ease;
+}
+
+.question-type-box:hover {
+    background-color: #e0e0e0;
+    /* xám đậm hơn */
+}
+.type-box:hover {
+    background-color: #e0e0e0;
+
+}
+/* Container toggle */
+.toggle-switch {
+    position: relative;
+    display: inline-block;
+    width: 50px;
+    height: 28px;
+    margin-left: 20px;
+    margin-top: 10px;
+    justify-content: space-between;
+
+}
+.question-type-box {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    padding: 10px 12px;
+    background: #f9f9f9;
+    border-radius: 6px;
+  }
+  
+  .answer-input {
+    width: 100%;
+    padding: 8px 12px;
+    border: 1px solid #ccc;
+    border-radius: 6px;
+    font-size: 14px;
+    transition: all 0.2s ease;
+  }
+  
+  .answer-input:focus {
+    border-color: #4caf50;   /* màu xanh khi focus */
+    box-shadow: 0 0 0 2px rgba(76, 175, 80, 0.2);
+    outline: none;
+  }
+  
+  .answer-input:hover {
+    border-color: #999;
+  }
+  
+.right-side {
+  display: flex;
+  justify-content: space-between; /* chữ trái, nút phải */
+}
+
+.new {
+    margin-left: 210px;
+}
+
+.label-text {
+    margin-top: 10px;
+    margin-left: 5px;
+}
+
+/* Ẩn checkbox mặc định */
+.toggle-switch input {
+    opacity: 0;
+    width: 0;
+    height: 0;
+}
+
+/* Thanh trượt */
+.slider {
+    position: absolute;
+    cursor: pointer;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: #ccc;
+    transition: 0.4s;
+    border-radius: 28px;
+}
+
+/* Nút tròn */
+.slider:before {
+    position: absolute;
+    content: "";
+    height: 22px;
+    width: 22px;
+    left: 3px;
+    bottom: 3px;
+    background-color: white;
+    transition: 0.4s;
+    border-radius: 50%;
+}
+
+/* Khi bật */
+.toggle-switch input:checked+.slider {
+    background-color: #4caf50;
+    /* màu xanh khi bật */
+}
+
+.toggle-switch input:checked+.slider:before {
+    transform: translateX(22px);
+    /* gạt sang phải */
+}
+
+.question-type-box,
+.question-type-box+div {
+    margin: 0;
+    /* bỏ margin mặc định */
+    padding: 8px 12px;
+    /* cho nó gọn, đều nhau */
+    border-bottom: 1px solid #eee;
+    /* nếu muốn có line phân cách */
+}
+
+/* Reset margin cho tiêu đề */
+.question-type-box h3,
+.question-type-box h4,
+.question-type-box h5 {
+    margin: 0;
+}
+
+.sidebar-settings>div {
+    margin: 0;
+    padding: 8px 12px;
+}
+
+.sidebar-settings h3,
+.sidebar-settings h4,
+.sidebar-settings h5 {
+    margin: 0;
+}

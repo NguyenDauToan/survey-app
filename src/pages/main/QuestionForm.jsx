@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import "../../styles/QuestionForm.css";
 import QuestionTypeSelector from "./QuestionTypeSelector";
-import { ChevronLeft, ChevronRight, Plus, Check } from "lucide-react";
+import { Plus, Check } from "lucide-react";
 
 export default function QuestionForm({
     description,
@@ -11,18 +11,16 @@ export default function QuestionForm({
     setAnswers,
     answers,
     backgroundImage,
+    questionType,
+    setQuestionType,
 }) {
     const [activeId, setActiveId] = useState(null);
-    const [currentQuestion, setCurrentQuestion] = useState(""); // câu hỏi đang nhập
+    const [currentQuestion, setCurrentQuestion] = useState("");
 
     const defaultBg = "/img/anh-dep-68.jpg";
     const bg = backgroundImage || defaultBg;
 
-    // chuyển sang câu hỏi theo id
-    const updateCurrentQuestion = (id) => {
-        setActiveId(id);
-    };
-
+    // thêm câu hỏi mới
     // thêm câu hỏi mới
     const addQuestion = () => {
         if (!currentQuestion.trim()) return;
@@ -30,21 +28,27 @@ export default function QuestionForm({
         const newQuestion = {
             id: questions.length + 1,
             text: currentQuestion,
+            type: questionType || "text",
+            answers:
+                questionType === "multiple-choice" || questionType === "checkbox"
+                    ? [""]
+                    : [], // 👈 thêm ít nhất 1 input rỗng
         };
 
         setQuestions([...questions, newQuestion]);
-        setActiveId(newQuestion.id); // chọn câu mới làm active
-        setCurrentQuestion(""); // reset input
+        setActiveId(newQuestion.id);
+        setCurrentQuestion("");
     };
 
-    // sang câu trước
-    const prevQuestion = () => {
-        if (activeId > 1) setActiveId(activeId - 1);
-    };
 
-    // sang câu tiếp theo
-    const nextQuestion = () => {
-        if (activeId < questions.length) setActiveId(activeId + 1);
+    // xóa câu hỏi
+    const deleteQuestion = (id) => {
+        const filtered = questions.filter((q) => q.id !== id);
+        setQuestions(filtered);
+
+        if (activeId === id) {
+            setActiveId(filtered.length > 0 ? filtered[0].id : null);
+        }
     };
 
     return (
@@ -56,12 +60,12 @@ export default function QuestionForm({
                 backgroundPosition: "center",
             }}
         >
-            {/* Lớp phủ mờ */}
+            {/* lớp phủ mờ */}
             <div className="absolute inset-0 bg-black/40" />
 
-            {/* Nội dung chính */}
+            {/* nội dung */}
             <div className="relative z-10 max-w-3xl mx-auto p-6 flex flex-col flex-1 overflow-y-auto pb-32">
-                {/* Ô nhập câu hỏi */}
+                {/* nhập câu hỏi */}
                 <div className="title-descripton p-6 text-center mb-6">
                     <input
                         type="text"
@@ -78,51 +82,188 @@ export default function QuestionForm({
                     />
                 </div>
 
-                {/* Danh sách câu hỏi */}
-                <div className="space-y-3">
+                {/* nếu chưa chọn loại thì hiện selector */}
+                {!questionType ? (
                     <QuestionTypeSelector
-                        onSelect={(type) => console.log("Chọn:", type)}
-                    />
+                        onSelect={(type) => {
+                            setQuestionType(type);
 
+                            // mặc định tạo sẵn 1 câu hỏi trống
+                            const newQuestion = {
+                                id: questions.length + 1,
+                                text: "",
+                                type,
+                                answers: [""], // chỉ 1 input rỗng
+                            };
+                            setQuestions([...questions, newQuestion]);
+                            setActiveId(newQuestion.id);
+                        }}
+                    />
+                ) : (
+                    <div className="selector mt-6 p-6 bg-white/10 backdrop-blur-md rounded-xl shadow-lg text-white">
+                        <h4 className="text-lg font-semibold mb-4">Cấu hình câu hỏi</h4>
+
+                        {/* Multiple Choice */}
+                        {questionType === "multiple-choice" && (
+                            <ul className="space-y-3">
+                                {questions
+                                    .find((q) => q.id === activeId)
+                                    ?.answers.map((ans, i) => (
+                                        <li
+                                            key={i}
+                                            className="flex items-center gap-3 p-2 bg-white/5 rounded-lg hover:bg-white/20 transition"
+                                        >
+                                            <input
+                                                type="radio"
+                                                name={`q-${activeId}`}
+                                                disabled
+                                                className="w-4 h-4 accent-teal-500"
+                                            />
+                                            <input
+                                                type="text"
+                                                value={ans}
+                                                onChange={(e) => {
+                                                    const updated = [...questions];
+                                                    const qIndex = updated.findIndex((q) => q.id === activeId);
+                                                    updated[qIndex].answers[i] = e.target.value;
+                                                    setQuestions(updated);
+                                                }}
+                                                placeholder={`Nhập đáp án ${i + 1}`}
+                                                className="flex-1 bg-transparent outline-none border-b border-white/30 focus:border-teal-400 transition"
+                                            />
+                                        </li>
+                                    ))}
+                            </ul>
+                        )}
+
+                        {/* Checkbox */}
+                        {questionType === "checkbox" && (
+                            <ul className="space-y-3">
+                                {questions
+                                    .find((q) => q.id === activeId)
+                                    ?.answers.map((ans, i) => (
+                                        <li
+                                            key={i}
+                                            className="flex items-center gap-3 p-2 bg-white/5 rounded-lg hover:bg-white/20 transition"
+                                        >
+                                            <input
+                                                type="checkbox"
+                                                disabled
+                                                className="w-4 h-4 accent-teal-500"
+                                            />
+                                            <input
+                                                type="text"
+                                                value={ans}
+                                                onChange={(e) => {
+                                                    const updated = [...questions];
+                                                    const qIndex = updated.findIndex((q) => q.id === activeId);
+                                                    updated[qIndex].answers[i] = e.target.value;
+                                                    setQuestions(updated);
+                                                }}
+                                                placeholder={`Nhập lựa chọn ${i + 1}`}
+                                                className="flex-1 bg-transparent outline-none border-b border-white/30 focus:border-teal-400 transition"
+                                            />
+                                        </li>
+                                    ))}
+                            </ul>
+                        )}
+
+                        {/* Rating */}
+                        {questionType === "rating" && (
+                            <div className="flex gap-3 justify-center">
+                                {[1, 2, 3, 4, 5].map((n) => (
+                                    <button
+                                        key={n}
+                                        className="w-10 h-10 flex items-center justify-center rounded-full bg-white/20 hover:bg-teal-500 transition shadow-md"
+                                    >
+                                        {n}
+                                    </button>
+                                ))}
+                            </div>
+                        )}
+
+                        {/* Text Answer */}
+                        {questionType === "text" && (
+                            <textarea
+                                className="w-full p-3 rounded-lg bg-white/10 text-white outline-none focus:ring-2 focus:ring-teal-400 transition"
+                                placeholder="Người dùng sẽ nhập câu trả lời..."
+                                disabled
+                            />
+                        )}
+
+                        {/* nút thêm đáp án */}
+                        {(questionType === "multiple-choice" || questionType === "checkbox") && (
+                            <div className="mt-6 text-center">
+                                <button
+                                    onClick={() => {
+                                        const updated = [...questions];
+                                        const qIndex = updated.findIndex((q) => q.id === activeId);
+                                        updated[qIndex].answers.push(""); // thêm 1 input rỗng
+                                        setQuestions(updated);
+                                    }}
+                                    className="px-4 py-2 rounded-lg bg-gradient-to-r from-teal-500 to-green-500 text-white font-medium shadow hover:opacity-90 transition"
+                                >
+                                    + Thêm đáp án
+                                </button>
+                            </div>
+                        )}
+                    </div>
+                )}
+
+                {/* danh sách câu hỏi */}
+                <div className="space-y-3 mt-6">
                     {questions.map((q) => (
                         <div
                             key={q.id}
-                            onClick={() => updateCurrentQuestion(q.id)}
                             className={`p-4 rounded cursor-pointer flex justify-between items-center ${activeId === q.id
-                                    ? "bg-teal-600 text-white"
-                                    : "bg-white/10 text-white hover:bg-white/20"
+                                ? "bg-teal-600 text-white"
+                                : "bg-white/10 text-white hover:bg-white/20"
                                 }`}
                         >
-                            <span>
+                            <span onClick={() => setActiveId(q.id)}>
                                 {q.id}. {q.text}
                             </span>
-                            {activeId === q.id && <Check className="w-5 h-5" />}
+                            <div className="flex items-center gap-2">
+                                {activeId === q.id && <Check className="w-5 h-5" />}
+                                <button
+                                    onClick={() => deleteQuestion(q.id)}
+                                    className="text-red-500 hover:text-red-700"
+                                >
+                                    X
+                                </button>
+                            </div>
                         </div>
                     ))}
                 </div>
             </div>
-
             {/* Footer dạng bảng ẩn/hiện */}
             {questions.length > 0 && (
                 <div className="fixed bottom-0 left-0 w-full group">
                     {/* khi chưa hover: chỉ thấy mép */}
-                    <div className="h-10 bg-gray-200/70 border-t border-gray-300 cursor-pointer group-hover:h-36 transition-all duration-300 ease-in-out overflow-hidden">
+                    <div className="h-10 bg-gray-200/70 border-t border-gray-300 cursor-pointer group-hover:h-36 transition-all duration-300 ease-in-out overflow-hidden relative">
                         <div className="w-full h-full bg-white shadow-lg flex items-center px-6 gap-4 overflow-x-auto">
-                            {/* nút prev */}
-                           
-
                             {/* danh sách câu hỏi */}
                             <div className="flex gap-4">
                                 {questions.map((q) => (
                                     <div
                                         key={q.id}
-                                        onClick={() => updateCurrentQuestion(q.id)}
-                                        className={`w-16 h-16 flex items-center justify-center border rounded-lg shadow cursor-pointer text-lg font-semibold transition ${activeId === q.id
+                                        onClick={() => setActiveId(q.id)}
+                                        className={`w-16 h-16 flex items-center justify-center border rounded-lg shadow cursor-pointer text-lg font-semibold transition relative ${activeId === q.id
                                                 ? "bg-teal-500 text-white"
                                                 : "hover:bg-gray-100"
                                             }`}
                                     >
                                         {q.id}
+                                        {/* nút xóa */}
+                                        <div
+                                            onClick={(e) => {
+                                                e.stopPropagation(); // tránh click nhầm vào chọn câu hỏi
+                                                deleteQuestion(q.id);
+                                            }}
+                                            className="absolute -top-1 -right-1 w-5 h-5 bg-red-500 text-white rounded-full flex items-center justify-center text-xs cursor-pointer"
+                                        >
+                                            ×
+                                        </div>
                                     </div>
                                 ))}
 
@@ -135,16 +276,11 @@ export default function QuestionForm({
                                     <span className="text-xs">Thêm</span>
                                 </div>
                             </div>
-
-                            {/* nút next */}
-                           
                         </div>
                     </div>
                 </div>
             )}
-
-
-            {/* Nút thêm câu hỏi nổi bên phải */}
+            {/* nút thêm câu hỏi nổi */}
             <button
                 onClick={addQuestion}
                 className="fixed right-6 top-1/2 -translate-y-1/2 z-50 w-12 h-12 rounded-full bg-teal-600 text-white flex items-center justify-center shadow-lg hover:bg-teal-500"
